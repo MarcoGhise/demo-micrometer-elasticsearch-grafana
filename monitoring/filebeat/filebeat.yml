@@ -1,0 +1,20 @@
+filebeat.inputs:
+- type: log
+  paths:
+  - '/store/demo-micrometer-elasticsearch-grafana/logs/app.log'
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.overwrite_keys: true
+
+processors:
+- drop_fields:
+    fields: ["agent","input","ecs","log"]
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  indices:
+    - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+
+#output.file:
+#   path: "/var/tmp"
+#   filename: filebeat_generated
